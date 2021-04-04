@@ -2,28 +2,35 @@ import { start } from "https://deno.land/x/denops_std@v0.4/mod.ts";
 
 start(async (vim) => {
   vim.register({
-    async wordcount(args: unknown): Promise<unknown> {
-      console.log(args);
-      let delimiter = `${args}`;
-      let lastLineNumber = await vim.call("line", "$");
-      let lines = await vim.call("getline", 1, lastLineNumber) as string[];
-      let text = lines.join("");
-      let escaped_delimiter = delimiter.replace(/[\\^$.*+?()[\]{}|]/g, "\\$&");
-      let regex = new RegExp(`${escaped_delimiter}(.+)${escaped_delimiter}`);
+    async countChars(args: unknown): Promise<void> {
+      const delimiter = `${args}`;
+      const lastLine = await vim.call("line", "$");
+      const lines = await vim.call("getline", 1, lastLine) as string[];
+      const text = lines.map((x) => x.trim()).join("");
+      const escaped = delimiter.replace(
+        /[\\^$.*+?()[\]{}|]/g,
+        "\\$&",
+      );
+      const regex = new RegExp(`${escaped}(.+)${escaped}`);
 
-      let match_texts = text.match(regex);
-      if (match_texts == null) {
+      const matches = text.match(regex);
+      if (matches == null) {
         console.log("any string is matched");
       } else {
-        console.log(match_texts[1].length);
+        const content = `${matches[1].length} chars`;
+        await vim.call("popup_atcursor", content, {
+          "border": [1, 1, 1, 1],
+          "borderchars": ["-", "|", "-", "|", "+", "+", "+", "+"],
+        });
       }
 
       // console.log(regex);
+      // console.log(matches);
       return await Promise.resolve();
     },
   });
 
   await vim.execute(`
-                    command! -nargs=1 CountChars call denops#request("${vim.name}", "wordcount", [<q-args>])
+                    command! -nargs=1 CountChars call denops#request("${vim.name}", "countChars", [<q-args>])
                     `);
 });
