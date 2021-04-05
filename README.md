@@ -20,4 +20,4 @@ depends = ["denops.vim"]
 
 call `:CountChars <delimiter>` then, displays the number of characters in the part enclosed by `<delimiter>`.
 
-
+![usage image](./img/charcount.gif)
