@@ -9,7 +9,7 @@ import { openPopup } from "./popup.ts";
 
 export async function main(denops: Denops): Promise<void> {
   denops.dispatcher = {
-    async countChars(args: unknown): Promise<void> {
+    async charCount(args: unknown): Promise<void> {
       ensureString(args);
       const lastLine = await denops.call("line", "$");
       ensureNumber(lastLine);
@@ -41,6 +41,6 @@ export async function main(denops: Denops): Promise<void> {
   };
 
   await denops.cmd(
-    `command! -nargs=? CountChars call denops#request("${denops.name}", "countChars", [<q-args>])`,
+    `command! -nargs=? CharCount call denops#request("${denops.name}", "charCount", [<q-args>])`,
   );
 }
