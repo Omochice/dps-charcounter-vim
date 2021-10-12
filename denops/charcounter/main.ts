@@ -7,7 +7,7 @@ import {
 } from "./deps.ts";
 import { openPopup } from "./popup.ts";
 
-export async function main(denops: Denops): Promise<void> {
+export function main(denops: Denops): void {
   denops.dispatcher = {
     async charCount(args: unknown): Promise<void> {
       ensureString(args);
@@ -39,8 +39,4 @@ export async function main(denops: Denops): Promise<void> {
       return await Promise.resolve();
     },
   };
-
-  await denops.cmd(
-    `command! -nargs=? CharCount call denops#request("${denops.name}", "charCount", [<q-args>])`,
-  );
 }
